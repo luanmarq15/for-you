@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Irinazinha</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Georgia, serif;
+    background: url("fundo.jpg") no-repeat center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* tela inicial escura */
+#entrada {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#entrada button {
+    padding: 18px 40px;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#entrada button:hover {
+    transform: scale(1.05);
+}
+
+/* botão principal */
+#abrirBtn {
+    padding: 18px 40px;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#abrirBtn:hover {
+    transform: scale(1.05);
+}
+
+/* área do texto */
+.papel {
+    width: 650px;
+    height: 400px;
+    display: none;
+    flex-direction: column;
+    position: relative;
+    padding: 40px;
+}
+
+.texto {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 1.6;
+    margin-top: 35px;
+    margin-left: 20px;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+}
+
+/* botão final */
+#btnFinal {
+    margin-top: 20px;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+}
+
+/* animação dos corações */
+.heart {
+    position: absolute;
+    bottom: -20px;
+    font-size: 18px;
+    color: #ff66cc;
+    animation: subir 4s linear forwards;
+    opacity: 0.9;
+}
+
+@keyframes subir {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-600px) scale(1.5); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- tela de entrada -->
+<div id="entrada">
+    <button onclick="entrar()"> 💌 abrir</button>
+</div>
+
+<!-- botão inicial -->
+<button id="abrirBtn" onclick="abrirCarta()" style="display:none;">
+ clique aqui, minha princesa
+</button>
+
+<div class="papel" id="papel">
+
+    <!-- texto que vai aparecer digitando -->
+    <div class="texto" id="texto"></div>
+
+    <button id="btnFinal" onclick="reiniciar()">
+        reiniciar...
+    </button>
+
+</div>
+
+<script>
+
+const frases = [
+"Looking at this sky...",
+"I thought of you...",
+"Calmo, bonito e especial...",
+"Just like you are to me...",
+"You’re not the best girlfriend in the world, you’re the BEST girlfriend in the universe. There are no words to describe how magnificent you are, my orchid."
+];
+
+let papel = document.getElementById("papel");
+let texto = document.getElementById("texto");
+let btn = document.getElementById("abrirBtn");
+let btnFinal = document.getElementById("btnFinal");
+
+let aberto = false;
+
+/* função da tela inicial */
+function entrar() {
+    document.getElementById("entrada").style.display = "none";
+    btn.style.display = "block";
+}
+
+/* abre a carta */
+function abrirCarta() {
+
+    if (aberto) return;
+    aberto = true;
+
+    btn.style.display = "none";
+    papel.style.display = "flex";
+
+    iniciarTexto();
+    iniciarCorações();
+}
+
+/* efeito de texto digitando */
+function iniciarTexto() {
+
+    texto.innerHTML = "";
+    btnFinal.style.display = "none";
+
+    let i = 0;
+
+    function mostrar() {
+
+        if (i >= frases.length) {
+            btnFinal.style.display = "inline-block";
+            return;
+        }
+
+        digitar(frases[i], () => {
+            texto.innerHTML += "<br><br>";
+            i++;
+            setTimeout(mostrar, 500);
+        });
+    }
+
+    function digitar(txt, cb) {
+        let j = 0;
+
+        function escrever() {
+            if (j < txt.length) {
+                texto.innerHTML += txt[j];
+                j++;
+                setTimeout(escrever, 40);
+            } else {
+                cb();
+            }
+        }
+
+        escrever();
+    }
+
+    mostrar();
+}
+
+/* reiniciar leitura */
+function reiniciar() {
+    iniciarTexto();
+}
+
+/* corações subindo */
+function iniciarCorações() {
+
+    setInterval(() => {
+
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "💕";
+
+        heart.style.left = Math.random() * 100 + "%";
+        heart.style.fontSize = (10 + Math.random() * 18) + "px";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 4000);
+
+    }, 300);
+}
+
+</script>
+
+</body>
+</html>
